@@ -9,4 +9,6 @@ builder.AddProject<Projects.WebShop_Web>("webfrontend")
     .WithReference(cache)
     .WithReference(apiService);
 
+builder.AddProject<Projects.WebShop_OrderingAPI>("webshop-orderingapi");
+
 builder.Build().Run();

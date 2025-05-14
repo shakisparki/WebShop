@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebShop.AppHost", "WebShop.AppHost\WebShop.AppHost.csproj", "{752AB270-1A62-4B99-B384-AE18E49E9D74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShop.AppHost", "WebShop.AppHost\WebShop.AppHost.csproj", "{752AB270-1A62-4B99-B384-AE18E49E9D74}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShop.ServiceDefaults", "WebShop.ServiceDefaults\WebShop.ServiceDefaults.csproj", "{5247371F-A000-4D79-AE4C-45F84288631E}"
 EndProject
@@ -11,6 +11,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShop.Web", "WebShop.Web\WebShop.Web.csproj", "{26DE53E5-46DC-4C7D-A612-19414BA40BA8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShop.Tests", "WebShop.Tests\WebShop.Tests.csproj", "{A7777198-31DB-4EF3-B52E-6ABF5C5DF3F2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShop.OrderingAPI", "WebShop.OrderingAPI\WebShop.OrderingAPI.csproj", "{FB86FF37-245D-4FAA-B12B-843B411A3B2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{A7777198-31DB-4EF3-B52E-6ABF5C5DF3F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7777198-31DB-4EF3-B52E-6ABF5C5DF3F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7777198-31DB-4EF3-B52E-6ABF5C5DF3F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB86FF37-245D-4FAA-B12B-843B411A3B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB86FF37-245D-4FAA-B12B-843B411A3B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB86FF37-245D-4FAA-B12B-843B411A3B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB86FF37-245D-4FAA-B12B-843B411A3B2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
