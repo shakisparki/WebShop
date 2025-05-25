@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebShop.ApiService\WebShop.ApiService.csproj" />
+    <ProjectReference Include="..\WebShop.ApiService\WebShop.CatalogAPI.csproj" />
     <ProjectReference Include="..\WebShop.OrderingAPI\WebShop.OrderingAPI.csproj" />
     <ProjectReference Include="..\WebShop.Web\WebShop.Web.csproj" />
   </ItemGroup>
@@ -19,6 +19,7 @@
     <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0" />
     <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="8.0.0" />
     <PackageReference Include="Aspire.Hosting.Redis" Version="8.0.0" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
