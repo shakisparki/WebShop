@@ -1,10 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using WebShop.CatalogAPI.Data;
+using WebShop.CatalogAPI;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<CatalogDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionStrings__catalogdb") ?? throw new InvalidOperationException("Connection string 'CatalogDbContext' not found.")));
 
 // Add service defaults & Aspire components.
 builder.AddServiceDefaults();
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -30,6 +41,8 @@ app.MapGet("/weatherforecast", () =>
 });
 
 app.MapDefaultEndpoints();
+
+app.MapItemEndpoints();
 
 app.Run();
 

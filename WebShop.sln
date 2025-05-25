@@ -6,7 +6,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShop.AppHost", "WebShop.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShop.ServiceDefaults", "WebShop.ServiceDefaults\WebShop.ServiceDefaults.csproj", "{5247371F-A000-4D79-AE4C-45F84288631E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShop.CatalogAPI", "WebShop.ApiService\WebShop.CatalogAPI.csproj", "{2FE08AB9-94BA-4E35-8241-3A13B2809AFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShop.CatalogAPI", "WebShop.CatalogAPI\WebShop.CatalogAPI.csproj", "{2FE08AB9-94BA-4E35-8241-3A13B2809AFC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShop.Web", "WebShop.Web\WebShop.Web.csproj", "{26DE53E5-46DC-4C7D-A612-19414BA40BA8}"
 EndProject
