@@ -4,9 +4,10 @@ using WebShop.CatalogAPI.Data;
 using WebShop.CatalogAPI;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<CatalogDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionStrings__catalogdb") ?? throw new InvalidOperationException("Connection string 'CatalogDbContext' not found.")));
+//builder.Services.AddDbContext<CatalogDbContext>(options =>
+//    options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionStrings__catalogdb") ?? throw new InvalidOperationException("Connection string 'CatalogDbContext' not found.")));
 
+builder.AddNpgsqlDbContext<CatalogDbContext>("catalogdb");
 // Add service defaults & Aspire components.
 builder.AddServiceDefaults();
 
