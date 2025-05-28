@@ -14,6 +14,6 @@ namespace WebShop.CatalogAPI.Data
         {
         }
 
-        public DbSet<WebShop.CatalogAPI.Entities.CatalogItem> Item { get; set; } = default!;
+        public DbSet<WebShop.CatalogAPI.Entities.CatalogItem> Items { get; set; } = default!;
     }
 }

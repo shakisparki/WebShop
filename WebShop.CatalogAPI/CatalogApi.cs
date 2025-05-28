@@ -13,14 +13,14 @@ public static class CatalogApi
 
         group.MapGet("/", async (CatalogDbContext db) =>
         {
-            return await db.Item.ToListAsync();
+            return await db.Items.ToListAsync();
         })
         .WithName("GetAllItems")
         .WithOpenApi();
 
         group.MapGet("/{id}", async Task<Results<Ok<CatalogItem>, NotFound>> (int itemid, CatalogDbContext db) =>
         {
-            return await db.Item.AsNoTracking()
+            return await db.Items.AsNoTracking()
                 .FirstOrDefaultAsync(model => model.Id == itemid)
                 is CatalogItem model
                     ? TypedResults.Ok(model)
@@ -31,7 +31,7 @@ public static class CatalogApi
 
         group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (int itemid, CatalogItem item, CatalogDbContext db) =>
         {
-            var affected = await db.Item
+            var affected = await db.Items
                 .Where(model => model.Id == itemid)
                 .ExecuteUpdateAsync(setters => setters
                     .SetProperty(m => m.Id, item.Id)
@@ -46,7 +46,7 @@ public static class CatalogApi
 
         group.MapPost("/", async (CatalogItem item, CatalogDbContext db) =>
         {
-            db.Item.Add(item);
+            db.Items.Add(item);
             await db.SaveChangesAsync();
             return TypedResults.Created($"/api/Item/{item.Id}",item);
         })
@@ -55,7 +55,7 @@ public static class CatalogApi
 
         group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> (int itemid, CatalogDbContext db) =>
         {
-            var affected = await db.Item
+            var affected = await db.Items
                 .Where(model => model.Id == itemid)
                 .ExecuteDeleteAsync();
             return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();

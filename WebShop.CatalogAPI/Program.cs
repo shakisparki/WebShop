@@ -1,5 +1,6 @@
 using WebShop.CatalogAPI.Data;
 using WebShop.CatalogAPI;
+using WebShop.CatalogAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddNpgsqlDbContext<CatalogDbContext>("catalogdb");
@@ -22,5 +23,7 @@ app.UseExceptionHandler();
 app.MapDefaultEndpoints();
 
 app.MapItemEndpoints();
+
+app.SetupDatabase();    
 
 app.Run();

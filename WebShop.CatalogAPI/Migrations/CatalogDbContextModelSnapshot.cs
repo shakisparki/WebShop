@@ -55,7 +55,7 @@ namespace WebShop.CatalogAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Item");
+                    b.ToTable("Items");
                 });
 #pragma warning restore 612, 618
         }
