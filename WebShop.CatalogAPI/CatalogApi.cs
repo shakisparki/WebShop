@@ -9,7 +9,7 @@ public static class CatalogApi
 {
     public static void MapItemEndpoints (this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/Item").WithTags(nameof(CatalogItem));
+        var group = routes.MapGroup("/api/Catalog").WithTags(nameof(CatalogItem));
 
         group.MapGet("/", async (CatalogDbContext db) =>
         {
@@ -18,7 +18,7 @@ public static class CatalogApi
         .WithName("GetAllItems")
         .WithOpenApi();
 
-        group.MapGet("/{id}", async Task<Results<Ok<CatalogItem>, NotFound>> (int itemid, CatalogDbContext db) =>
+        group.MapGet("/{itemid}", async Task<Results<Ok<CatalogItem>, NotFound>> (int itemid, CatalogDbContext db) =>
         {
             return await db.Items.AsNoTracking()
                 .FirstOrDefaultAsync(model => model.Id == itemid)
@@ -29,7 +29,7 @@ public static class CatalogApi
         .WithName("GetItemById")
         .WithOpenApi();
 
-        group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (int itemid, CatalogItem item, CatalogDbContext db) =>
+        group.MapPut("/{itemid}", async Task<Results<Ok, NotFound>> (int itemid, CatalogItem item, CatalogDbContext db) =>
         {
             var affected = await db.Items
                 .Where(model => model.Id == itemid)
@@ -48,12 +48,12 @@ public static class CatalogApi
         {
             db.Items.Add(item);
             await db.SaveChangesAsync();
-            return TypedResults.Created($"/api/Item/{item.Id}",item);
+            return TypedResults.Created($"/api/Catalog/{item.Id}",item);
         })
         .WithName("CreateItem")
         .WithOpenApi();
 
-        group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> (int itemid, CatalogDbContext db) =>
+        group.MapDelete("/{itemid}", async Task<Results<Ok, NotFound>> (int itemid, CatalogDbContext db) =>
         {
             var affected = await db.Items
                 .Where(model => model.Id == itemid)

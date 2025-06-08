@@ -12,10 +12,13 @@ namespace WebShop.CatalogAPI.Extensions
             //migrate db
             using var scope = app.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<CatalogDbContext>();
-            db.Database.Migrate();
-            db.SaveChanges();
-
-            SeedDatabase(db);
+            var strategy = db.Database.CreateExecutionStrategy();
+            strategy.Execute(() =>
+            {
+                db.Database.Migrate();
+                db.SaveChanges();
+                SeedDatabase(db);
+            });
         }
 
         private static void SeedDatabase(CatalogDbContext db)

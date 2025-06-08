@@ -1,0 +1,49 @@
+﻿@page "/catalog"
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+
+@inject CatalogApiClient CatalogApi
+
+<PageTitle>Catalog</PageTitle>
+
+<h1>Catalog Items</h1>
+
+<p>This component demonstrates showing data loaded from a backend API service.</p>
+
+@if (catalog == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>AvailableStock</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in catalog)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Description</td>
+                    <td>@item.Price</td>
+                    <td>@item.AvailableStock</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<CatalogItem>? catalog;
+
+    protected override async Task OnInitializedAsync()
+    {
+        catalog = await CatalogApi.GetAllItemsAsync();
+    }
+}
