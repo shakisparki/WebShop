@@ -17,24 +17,30 @@
 else
 {
     <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>AvailableStock</th>
-            </tr>
-        </thead>
         <tbody>
-            @foreach (var item in catalog)
+            @for (int i = 0; i < catalog.Count; i+=4)
             {
                 <tr>
-                    <td>@item.Name</td>
-                    <td>@item.Description</td>
-                    <td>@item.Price</td>
-                    <td>@item.AvailableStock</td>
+                    @for (int j = i; j < i+4; j++)
+                    {
+                        @if (j >= catalog.Count)
+                        {
+                            <td></td> <!-- Empty cell if there are less than 4 items -->
+                            continue;
+                        }   
+                        var item = catalog[j];
+                        <td>
+                            <div>
+                                <p>@item.Name</p>
+                                <p>@item.Description</p>
+                                <p>@item.Price</p>
+                                <p>@item.AvailableStock</p>
+                            </div>
+                        </td>
+                    }
                 </tr>
             }
+            
         </tbody>
     </table>
 }
