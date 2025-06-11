@@ -20,6 +20,13 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
 
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.MapDefaultEndpoints();
 
 app.MapItemEndpoints();
