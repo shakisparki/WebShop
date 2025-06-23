@@ -39,10 +39,9 @@ app.MapRazorComponents<App>()
 
 app.MapDefaultEndpoints();
 
-app.MapGet("/product-images/{itemId:int}", (int itemId, CatalogApiClient catalogApiClient) =>
+app.MapGet("/product-images/{itemId:int}", async (int itemId, CatalogApiClient catalogApiClient) =>
 {
-    var imageUrl = catalogApiClient.GetImageUrl(itemId);
-    return Results.Redirect(imageUrl);
+    return await catalogApiClient.GetImageUrlAsync(itemId);
 });
 
 app.Run();

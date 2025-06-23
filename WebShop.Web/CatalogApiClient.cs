@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http.HttpResults;
+
 namespace WebShop.Web;
 
 public class CatalogApiClient(HttpClient httpClient)
@@ -21,15 +23,11 @@ public class CatalogApiClient(HttpClient httpClient)
         return null;
     }
 
-    public async Task<string> GetImageUrlAsync(int itemId)
+    public async Task<FileContentHttpResult> GetImageUrlAsync(int itemId)
     {
         var response = await _httpClient.GetAsync($"/api/Catalog/{itemId}/image");
         response.EnsureSuccessStatusCode();
-        return response.RequestMessage?.RequestUri?.ToString() ?? string.Empty;
-    }
-
-    public string GetImageUrl(int itemId)
-    {
-        return new Uri(_httpClient.BaseAddress!, $"/api/Catalog/{itemId}/image").ToString();
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+        return TypedResults.File(bytes, "image/webp");
     }
 }
