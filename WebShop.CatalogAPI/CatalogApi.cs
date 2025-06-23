@@ -62,5 +62,18 @@ public static class CatalogApi
         })
         .WithName("DeleteItem")
         .WithOpenApi();
+
+        group.MapGet("/{itemid}/image", async Task<Results<FileContentHttpResult, NotFound>> (int itemid) =>
+        {
+            var filePath = $"pics/{itemid}.webp";
+            if (File.Exists(filePath))
+            {
+                var bytes = await File.ReadAllBytesAsync(filePath);
+                return TypedResults.File(bytes, "image/webp");
+            }
+            return TypedResults.NotFound();
+        })
+        .WithName("GetItemImageById")
+        .WithOpenApi();
     }
 }

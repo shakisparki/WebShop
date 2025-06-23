@@ -27,6 +27,12 @@ else
                         }
                         var item = catalog[j];
                         <td>
+                            @{
+                                var imageUrl = $"product-images/{item.Id}"; 
+                            }
+                            <div>
+                                <img src="@imageUrl" alt="@item.Name" class="img-fluid" style="max-width: 100%; height: auto;" />
+                            </div>
                             <div>
                                 <p>@item.Name</p>
                                 <p>@item.Description</p>

@@ -20,4 +20,16 @@ public class CatalogApiClient(HttpClient httpClient)
         }
         return null;
     }
+
+    public async Task<string> GetImageUrlAsync(int itemId)
+    {
+        var response = await _httpClient.GetAsync($"/api/Catalog/{itemId}/image");
+        response.EnsureSuccessStatusCode();
+        return response.RequestMessage?.RequestUri?.ToString() ?? string.Empty;
+    }
+
+    public string GetImageUrl(int itemId)
+    {
+        return new Uri(_httpClient.BaseAddress!, $"/api/Catalog/{itemId}/image").ToString();
+    }
 }
