@@ -30,8 +30,11 @@ else
                             @{
                                 var imageUrl = $"product-images/{item.Id}"; 
                             }
+
                             <div>
-                                <img src="@imageUrl" alt="@item.Name" class="img-fluid" style="max-width: 100%; height: auto;" />
+                                <a href="item/@item.Id">
+                                    <img src="@imageUrl" alt="@item.Name" class="img-fluid" style="max-width: 100%; height: auto;" />
+                                </a>
                             </div>
                             <div>
                                 <p>@item.Name</p>
@@ -39,6 +42,7 @@ else
                                 <p>@item.Price</p>
                                 <p>@item.AvailableStock</p>
                             </div>
+                            
                         </td>
                     }
                 </tr>
@@ -47,7 +51,6 @@ else
         </tbody>
     </table>
 }
-
 
 @code{
     private List<CatalogItem>? catalog;
