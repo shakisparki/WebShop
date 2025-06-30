@@ -16,4 +16,6 @@ builder.AddProject<Projects.WebShop_Web>("webfrontend")
     .WithReference(cache)
     .WithReference(catalogAPI);
 
+builder.AddProject<Projects.WebShop_BasketAPI>("webshop-basketapi");
+
 builder.Build().Run();

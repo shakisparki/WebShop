@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebShop.BasketAPI\WebShop.BasketAPI.csproj" />
     <ProjectReference Include="..\WebShop.CatalogAPI\WebShop.CatalogAPI.csproj" />
     <ProjectReference Include="..\WebShop.OrderingAPI\WebShop.OrderingAPI.csproj" />
     <ProjectReference Include="..\WebShop.Web\WebShop.Web.csproj" />
