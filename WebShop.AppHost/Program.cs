@@ -1,6 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var cache = builder.AddRedis("cache");
+var basketcache = builder.AddRedis("basketcache");
 var rabbitMq = builder.AddRabbitMQ("rabbitmq"); 
 var postgres = builder.AddPostgres("postgres");
 
@@ -16,6 +17,7 @@ builder.AddProject<Projects.WebShop_Web>("webfrontend")
     .WithReference(cache)
     .WithReference(catalogAPI);
 
-builder.AddProject<Projects.WebShop_BasketAPI>("webshop-basketapi");
+builder.AddProject<Projects.WebShop_BasketAPI>("webshop-basketapi")
+    .WithReference(basketcache);
 
 builder.Build().Run();
