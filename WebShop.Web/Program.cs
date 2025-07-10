@@ -1,5 +1,6 @@
 using WebShop.Web;
 using WebShop.Web.Components;
+using Grpc.Net.ClientFactory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,8 @@ builder.AddRedisOutputCache("cache");
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+//builder.Services.AddGrpcClient<Basket.BasketClient>(options =>
 
 builder.Services.AddHttpClient<CatalogApiClient>(client =>
     {
