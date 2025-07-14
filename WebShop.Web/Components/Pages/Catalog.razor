@@ -2,7 +2,8 @@
 @attribute [StreamRendering(true)]
 @attribute [OutputCache(Duration = 5)]
 
-@inject CatalogApiClient CatalogApi
+@inject CatalogApiClient CatalogApiClient
+@inject BasketGrpcClient BasketGrpcClient
 
 <PageTitle>Catalog</PageTitle>
 
@@ -25,8 +26,8 @@ else
         <p>@item.Price</p>
         <p>@item.AvailableStock</p>
     </div>
-    
-    
+
+
     <div>
         @if (IsAddedToCart)
         {
@@ -40,7 +41,7 @@ else
         {
             <div><button name="cartBtnAdd" onsubmit="@AddToCart()"> Add to Cart </button></div>
         }
-        </div>
+    </div>
 }
 
 @code {
@@ -53,7 +54,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        item = await CatalogApi.GetItemByIdAsync(itemId);
+        item = await CatalogApiClient.GetItemByIdAsync(itemId);
     }
 
     public async Task AddToCart()
@@ -65,6 +66,7 @@ else
             QtyInCart = 0;
 
             //remove from cart logic here
+            await BasketGrpcClient.AddToBasketAsync(itemId, 0);
             return;
         }
 

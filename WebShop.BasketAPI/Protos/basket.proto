@@ -14,9 +14,9 @@ service Basket {
 
 // The request message containing the catalog item.
 message BasketRequest {
-  string  UserId = 1;
-  string  CatalogId = 2;
-  string  Quantity = 3; // Default quantity is 1
+  int32  UserId = 1;
+  int32  CatalogId = 2;
+  int32  Quantity = 3; // Default quantity is 1
   string  Name = 4;
 }
 
