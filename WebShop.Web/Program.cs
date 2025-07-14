@@ -1,6 +1,5 @@
 using WebShop.Web;
 using WebShop.Web.Components;
-using Grpc.Net.ClientFactory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +11,12 @@ builder.AddRedisOutputCache("cache");
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-//builder.Services.AddGrpcClient<Basket.BasketClient>(options =>
+builder.Services.AddGrpcClient<BasketGrpcClient>(options =>
+    {
+        // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
+        // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
+        options.Address = new("https+http://basketapi");
+    });
 
 builder.Services.AddHttpClient<CatalogApiClient>(client =>
     {
