@@ -1,0 +1,88 @@
+﻿@page "/item/{itemId:int}"
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+
+@inject CatalogApiClient CatalogApiClient
+@inject BasketGrpcClient BasketGrpcClient
+
+<PageTitle>Catalog</PageTitle>
+
+<h1>Catalog Items</h1>
+
+<p>This component demonstrates showing data loaded from a backend API service.</p>
+
+@if (item == null)
+{
+    <p><em>Can't find Item</em></p>
+}
+else
+{
+    <div>
+        <img src="product-images/@item.Id" alt="@item.Name" class="img-fluid" style="max-width: 100%; height: auto;" />
+    </div>
+    <div>
+        <p>@item.Name</p>
+        <p>@item.Description</p>
+        <p>@item.Price</p>
+        <p>@item.AvailableStock</p>
+    </div>
+
+
+    <div>
+        @if (IsAddedToCart)
+        {
+            <div><button name="cartBtnIncrement" onsubmit="@IncrementCart(true)"> + </button></div>
+            <div><button name="cartBtnDecrement" onsubmit="@IncrementCart(false)"> - </button></div>
+            <p></p>
+            <div><button name="cartBtnRemove" onsubmit="@AddToCart()"> Remove from Cart </button></div>
+            <p>Item has been added to the cart.</p>
+        }
+        else
+        {
+            <div><button name="cartBtnAdd" onsubmit="@AddToCart()"> Add to Cart </button></div>
+        }
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public int itemId { get; set; }
+    public bool IsAddedToCart { get; set; }
+    public int QtyInCart { get; set; }
+    private CatalogItem? item;
+
+    protected override async Task OnInitializedAsync()
+    {
+        item = await CatalogApiClient.GetItemByIdAsync(itemId);
+    }
+
+    public async Task AddToCart()
+    {
+        if (IsAddedToCart)
+        {
+            // remove all from cart
+            IsAddedToCart = false;
+            QtyInCart = 0;
+
+            //remove from cart logic here
+            await BasketGrpcClient.AddToBasketAsync(itemId, 0);
+            return;
+        }
+
+        IsAddedToCart = true;
+        QtyInCart = 1; // Assuming we add one item to the cart initially    
+
+        //add to cart logic here
+        
+    }
+
+    public async Task IncrementCart(bool add)
+    {
+        IsAddedToCart = true;
+        QtyInCart += add ? 1 : -1;
+
+        //update cart logic here
+
+    }
+}

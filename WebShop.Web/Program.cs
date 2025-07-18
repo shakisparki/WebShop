@@ -11,11 +11,18 @@ builder.AddRedisOutputCache("cache");
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient<WeatherApiClient>(client =>
+builder.Services.AddGrpcClient<BasketGrpcClient>(options =>
     {
         // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
         // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-        client.BaseAddress = new("https+http://apiservice");
+        options.Address = new("https+http://basketapi");
+    });
+
+builder.Services.AddHttpClient<CatalogApiClient>(client =>
+    {
+        // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
+        // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
+        client.BaseAddress = new("https+http://catalogapi");
     });
 
 var app = builder.Build();
@@ -38,5 +45,10 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.MapDefaultEndpoints();
+
+app.MapGet("/product-images/{itemId:int}", async (int itemId, CatalogApiClient catalogApiClient) =>
+{
+    return await catalogApiClient.GetImageUrlAsync(itemId);
+});
 
 app.Run();

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option csharp_namespace = "WebShop.BasketAPI";
+
+package basket;
+
+// The basket service definition.
+service Basket {
+
+  // Adds an item to the basket
+  rpc AddToBasket (BasketRequest) returns (BasketResponse);
+  rpc RemoveFromBasket (BasketRequest) returns (BasketResponse);
+}
+
+// The request message containing the catalog item.
+message BasketRequest {
+  int32  UserId = 1;
+  int32  CatalogId = 2;
+  int32  Quantity = 3; // Default quantity is 1
+  string  Name = 4;
+}
+
+// The response message containing the status.
+message BasketResponse {
+  bool Success = 1;
+  string Message = 2;
+}
+
