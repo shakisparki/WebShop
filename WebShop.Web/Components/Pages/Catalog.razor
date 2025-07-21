@@ -29,18 +29,21 @@ else
 
 
     <div>
+        <form class="add-to-cart" method="post" @formname="add-to-cart" @onsubmit="@AddToCart">
+                <AntiforgeryToken />
         @if (IsAddedToCart)
         {
-            <div><button name="cartBtnIncrement" onsubmit="@IncrementCart(true)"> + </button></div>
-            <div><button name="cartBtnDecrement" onsubmit="@IncrementCart(false)"> - </button></div>
+            <div><button name="cartBtnIncrement" @onsubmit="@IncrementCart"> + </button></div>
+            <div><button name="cartBtnDecrement" @onsubmit="@DecrementCart"> - </button></div>
             <p></p>
-            <div><button name="cartBtnRemove" onsubmit="@AddToCart()"> Remove from Cart </button></div>
+            <div><button name="cartBtnRemove" type="submit"> Remove from Cart </button></div>
             <p>Item has been added to the cart.</p>
         }
         else
         {
-            <div><button name="cartBtnAdd" onsubmit="@AddToCart()"> Add to Cart </button></div>
+            <div><button name="cartBtnAdd" @onclick="@AddToCart"> Add to Cart </button></div>
         }
+        </form>
     </div>
 }
 
@@ -74,13 +77,22 @@ else
         QtyInCart = 1; // Assuming we add one item to the cart initially    
 
         //add to cart logic here
-        
+        await BasketGrpcClient.AddToBasketAsync(itemId, QtyInCart);
     }
 
-    public async Task IncrementCart(bool add)
+    public async Task IncrementCart()
     {
         IsAddedToCart = true;
-        QtyInCart += add ? 1 : -1;
+        QtyInCart +=  1;
+
+        //update cart logic here
+
+    }
+
+    public async Task DecrementCart()
+    {
+        IsAddedToCart = true;
+        QtyInCart +=  -1;
 
         //update cart logic here
 

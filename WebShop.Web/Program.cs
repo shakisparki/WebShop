@@ -11,11 +11,9 @@ builder.AddRedisOutputCache("cache");
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddGrpcClient<BasketGrpcClient>(options =>
+builder.Services.AddGrpcClient<WebShop.BasketAPI.Basket.BasketClient>(options =>
     {
-        // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
-        // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-        options.Address = new("https+http://basketapi");
+        options.Address = new("https://basketapi");
     });
 
 builder.Services.AddHttpClient<CatalogApiClient>(client =>
@@ -25,6 +23,12 @@ builder.Services.AddHttpClient<CatalogApiClient>(client =>
         client.BaseAddress = new("https+http://catalogapi");
     });
 
+builder.Services.AddScoped<BasketGrpcClient>();
+//    (sp =>
+//{
+//    var grpcClient = sp.GetRequiredService<WebShop.BasketAPI.Basket.BasketClient>();
+//    return new BasketGrpcClient(grpcClient);
+//});
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
