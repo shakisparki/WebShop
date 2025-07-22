@@ -13,7 +13,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddGrpcClient<WebShop.BasketAPI.Basket.BasketClient>(options =>
     {
-        options.Address = new("https://basketapi");
+        options.Address = new(builder.Configuration.GetValue<string>("services:basketapi:http:0") ?? "http://basketapi");
     });
 
 builder.Services.AddHttpClient<CatalogApiClient>(client =>
@@ -24,11 +24,7 @@ builder.Services.AddHttpClient<CatalogApiClient>(client =>
     });
 
 builder.Services.AddScoped<BasketGrpcClient>();
-//    (sp =>
-//{
-//    var grpcClient = sp.GetRequiredService<WebShop.BasketAPI.Basket.BasketClient>();
-//    return new BasketGrpcClient(grpcClient);
-//});
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

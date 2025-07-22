@@ -12,12 +12,13 @@ var catalogAPI = builder.AddProject<Projects.WebShop_CatalogAPI>("catalogapi")
 
 var orderingAPI = builder.AddProject<Projects.WebShop_OrderingAPI>("orderingapi");
 
+var basketAPI = builder.AddProject<Projects.WebShop_BasketAPI>("basketapi")
+    .WithReference(basketcache);
+
 builder.AddProject<Projects.WebShop_Web>("webfrontend")
     .WithExternalHttpEndpoints()
     .WithReference(cache)
+    .WithReference(basketAPI)
     .WithReference(catalogAPI);
-
-builder.AddProject<Projects.WebShop_BasketAPI>("basketapi")
-    .WithReference(basketcache);
 
 builder.Build().Run();
