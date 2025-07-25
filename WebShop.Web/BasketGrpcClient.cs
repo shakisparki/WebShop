@@ -6,9 +6,16 @@ namespace WebShop.Web
     public class BasketGrpcClient(GrpcClient Client)
     {
         private readonly GrpcClient _client = Client;
+
+        public async Task<BasketResponse> GetBasketAsync()
+        {
+            var request = new GetBasketRequest();
+            return await _client.GetBasketAsync(request);
+        }
+
         public async Task<BasketResponse> AddToBasketAsync(int ItemId, int qty)
         {
-            var request = new BasketRequest
+            var request = new AddToBasketRequest
             {
                 CatalogId = ItemId,
                 Quantity = qty
@@ -17,7 +24,7 @@ namespace WebShop.Web
         }
         public async Task<BasketResponse> RemoveFromBasketAsync(int ItemId)
         {
-            var request = new BasketRequest
+            var request = new RemoveFromBasketRequest
             {
                 CatalogId = ItemId,
             };

@@ -8,12 +8,21 @@ package basket;
 service Basket {
 
   // Adds an item to the basket
-  rpc AddToBasket (BasketRequest) returns (BasketResponse);
-  rpc RemoveFromBasket (BasketRequest) returns (BasketResponse);
+  rpc GetBasket (GetBasketRequest) returns (BasketResponse);
+  rpc AddToBasket (AddToBasketRequest) returns (BasketResponse);
+  rpc RemoveFromBasket (RemoveFromBasketRequest) returns (BasketResponse);
 }
 
 // The request message containing the catalog item.
-message BasketRequest {
+message AddToBasketRequest {
+  int32  UserId = 1;
+  int32  CatalogId = 2;
+  int32  Quantity = 3; // Default quantity is 1
+  string  Name = 4;
+}
+
+// The request message containing the catalog item.
+message RemoveFromBasketRequest {
   int32  UserId = 1;
   int32  CatalogId = 2;
   int32  Quantity = 3; // Default quantity is 1
@@ -26,3 +35,5 @@ message BasketResponse {
   string Message = 2;
 }
 
+message GetBasketRequest {
+}

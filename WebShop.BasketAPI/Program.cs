@@ -5,8 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.AddRedisClient("redis");
-builder.Services.AddTransient<BasketService>();
+builder.AddRedisClient("basketcache"); //, opt => opt.ConnectionString = builder.Configuration.GetConnectionString("basketcache")
 builder.Services.AddTransient<IBasketRepository, BasketRepository>(); //Addscoped??
 
 // Add services to the container.
@@ -15,6 +14,8 @@ builder.Services.AddGrpc();
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
+
+app.UseDeveloperExceptionPage(); //add condition to this later
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<BasketService>();

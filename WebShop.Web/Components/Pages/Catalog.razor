@@ -77,7 +77,8 @@ else
         QtyInCart = 1; // Assuming we add one item to the cart initially    
 
         //add to cart logic here
-        await BasketGrpcClient.AddToBasketAsync(itemId, QtyInCart);
+        await BasketGrpcClient.GetBasketAsync();
+        // await BasketGrpcClient.AddToBasketAsync(itemId, QtyInCart);
     }
 
     public async Task IncrementCart()

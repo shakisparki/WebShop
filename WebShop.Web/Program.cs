@@ -13,7 +13,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddGrpcClient<WebShop.BasketAPI.Basket.BasketClient>(options =>
     {
-        options.Address = new(builder.Configuration.GetValue<string>("services:basketapi:http:0") ?? "http://basketapi");
+        options.Address = new(builder.Configuration.GetValue<string>("services:basketapi:https:0") ?? "http://basketapi");
     });
 
 builder.Services.AddHttpClient<CatalogApiClient>(client =>

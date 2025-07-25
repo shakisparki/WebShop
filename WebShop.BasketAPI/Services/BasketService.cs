@@ -14,7 +14,12 @@ public class BasketService : Basket.BasketBase
         _basketRepository = basketRepository;
     }
 
-    public override async Task<BasketResponse> AddToBasket(BasketRequest request, ServerCallContext context)
+    public override async Task<BasketResponse> GetBasket(GetBasketRequest request, ServerCallContext context)
+    {
+        return new BasketResponse();
+    }
+
+    public override async Task<BasketResponse> AddToBasket(AddToBasketRequest request, ServerCallContext context)
     {
         _logger.LogInformation("Adding item to basket for user {UserId}", request.UserId);
         await _basketRepository.SetBasketAsync(request.UserId, request);
@@ -26,7 +31,7 @@ public class BasketService : Basket.BasketBase
         //return base.AddToBasket(request, context);
     }
 
-    public override async Task<BasketResponse> RemoveFromBasket(BasketRequest request, ServerCallContext context)
+    public override async Task<BasketResponse> RemoveFromBasket(RemoveFromBasketRequest request, ServerCallContext context)
     {
         _logger.LogInformation("Removing item from basket for user {UserId}", request.UserId);
         await _basketRepository.DeleteBasketAsync(request.UserId);

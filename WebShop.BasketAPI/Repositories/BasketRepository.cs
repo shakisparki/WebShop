@@ -13,16 +13,16 @@ namespace WebShop.BasketAPI.Repositories
             _database = connectionMultiplexer.GetDatabase();
         }
 
-        public async Task SetBasketAsync(int userId, BasketRequest basket)
+        public async Task SetBasketAsync(int userId, AddToBasketRequest basket)
         {
             var serializedBasket = JsonSerializer.Serialize(basket);
             await _database.StringSetAsync(GetBasketKey(userId), serializedBasket);
         }
 
-        public async Task<BasketRequest?> GetBasketAsync(int userId)
+        public async Task<AddToBasketRequest?> GetBasketAsync(int userId)
         {
             var basket = await _database.StringGetAsync(GetBasketKey(userId));
-            return basket.IsNullOrEmpty ? null : JsonSerializer.Deserialize<BasketRequest>(basket);
+            return basket.IsNullOrEmpty ? null : JsonSerializer.Deserialize<AddToBasketRequest>(basket);
         }
 
         public async Task DeleteBasketAsync(int userId)
