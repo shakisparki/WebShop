@@ -1,10 +1,12 @@
 ﻿
+using WebShop.BasketAPI.Models;
+
 namespace WebShop.BasketAPI.Repositories
 {
     public interface IBasketRepository
     {
         Task DeleteBasketAsync(int userId);
-        Task<AddToBasketRequest?> GetBasketAsync(int userId);
-        Task SetBasketAsync(int userId, AddToBasketRequest basket);
+        Task<BasketResource?> GetBasketAsync(int userId);
+        Task SetBasketAsync(BasketResource basket);
     }
 }

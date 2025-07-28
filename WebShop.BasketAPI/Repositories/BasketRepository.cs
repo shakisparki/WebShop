@@ -1,5 +1,6 @@
 using StackExchange.Redis;
 using System.Text.Json;
+using WebShop.BasketAPI.Models;
 
 namespace WebShop.BasketAPI.Repositories
 {
@@ -13,16 +14,16 @@ namespace WebShop.BasketAPI.Repositories
             _database = connectionMultiplexer.GetDatabase();
         }
 
-        public async Task SetBasketAsync(int userId, AddToBasketRequest basket)
+        public async Task SetBasketAsync(BasketResource basket)
         {
             var serializedBasket = JsonSerializer.Serialize(basket);
-            await _database.StringSetAsync(GetBasketKey(userId), serializedBasket);
+            await _database.StringSetAsync(GetBasketKey(basket.UserId), serializedBasket);
         }
 
-        public async Task<AddToBasketRequest?> GetBasketAsync(int userId)
+        public async Task<BasketResource?> GetBasketAsync(int userId)
         {
             var basket = await _database.StringGetAsync(GetBasketKey(userId));
-            return basket.IsNullOrEmpty ? null : JsonSerializer.Deserialize<AddToBasketRequest>(basket);
+            return basket.IsNullOrEmpty ? null : JsonSerializer.Deserialize<BasketResource>(basket);
         }
 
         public async Task DeleteBasketAsync(int userId)
