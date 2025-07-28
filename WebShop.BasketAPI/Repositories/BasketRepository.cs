@@ -20,18 +20,18 @@ namespace WebShop.BasketAPI.Repositories
             await _database.StringSetAsync(GetBasketKey(basket.UserId), serializedBasket);
         }
 
-        public async Task<BasketResource?> GetBasketAsync(int userId)
+        public async Task<BasketResource?> GetBasketAsync(string userId)
         {
             var basket = await _database.StringGetAsync(GetBasketKey(userId));
             return basket.IsNullOrEmpty ? null : JsonSerializer.Deserialize<BasketResource>(basket);
         }
 
-        public async Task DeleteBasketAsync(int userId)
+        public async Task DeleteBasketAsync(string userId)
         {
             await _database.KeyDeleteAsync(GetBasketKey(userId));
         }
 
-        private string GetBasketKey(int userId)
+        private string GetBasketKey(string userId)
         {
             return $"{_basketPrefix}{userId}";
         }

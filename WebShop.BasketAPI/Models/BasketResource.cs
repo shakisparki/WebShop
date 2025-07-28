@@ -2,8 +2,8 @@
 {
     public class BasketResource
     {
-        public int UserId { get; set; }
-        public List<BasketItemResource> Items { get; set; } = new List<BasketItemResource>();
+        public required string UserId { get; set; }
+        public List<BasketItemResource> Items { get; set; } = [];
     }
 
     public class BasketItemResource

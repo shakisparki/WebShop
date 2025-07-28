@@ -1,4 +1,5 @@
 using Grpc.Core;
+using WebShop.BasketAPI.Models;
 using WebShop.BasketAPI.Repositories;
 
 namespace WebShop.BasketAPI.Services;
@@ -7,29 +8,50 @@ public class BasketService(ILogger<BasketService> logger, IBasketRepository bask
 {
     public override async Task<BasketResponse> GetBasket(GetBasketRequest request, ServerCallContext context)
     {
-        return new BasketResponse();
+        var userId = context.GetHttpContext().User.FindFirst("sub")?.Value ?? "testuser";
+        var basket = await basketRepository.GetBasketAsync(userId);
+        var response = new BasketResponse();
+        if( basket is null)
+        {
+            return response;
+        }
+        basket.Items.ForEach(item =>
+        {
+            response.Items.Add(new BasketItem
+            {
+                ProductId = item.ProductId,
+                Quantity = item.Quantity,
+            });
+        });
+        return response;
     }
 
-    public override async Task<BasketResponse> AddToBasket(AddToBasketRequest request, ServerCallContext context)
+    public override async Task<BasketResponse> UpdateBasket(UpdateBasketRequest request, ServerCallContext context)
     {
-        logger.LogInformation("Adding item to basket for user {UserId}", request.UserId);
-        await basketRepository.SetBasketAsync(request.UserId, request);
+        var userId = context.GetHttpContext().User.FindFirst("sub")?.Value ?? "testuser";
+        logger.LogInformation("Adding item to basket for user {UserId}", userId);
+
+        var basketResource = new BasketResource
+        {
+            UserId = userId,
+            Items = request.Items.Select(item => new BasketItemResource
+            {
+                ProductId = item.ProductId,
+                Quantity = item.Quantity
+            }).ToList()
+        };
+        await basketRepository.SetBasketAsync(basketResource);
         return new BasketResponse
         {
-            Success = true,
-            Message = "Item added to basket successfully."
-        };
-        //return base.AddToBasket(request, context);
+            Items = { request.Items }
+        };  
     }
 
-    public override async Task<BasketResponse> RemoveFromBasket(RemoveFromBasketRequest request, ServerCallContext context)
+    public override async Task<RemoveBasketResponse> RemoveBasket(RemoveBasketRequest request, ServerCallContext context)
     {
-        logger.LogInformation("Removing item from basket for user {UserId}", request.UserId);
-        await basketRepository.DeleteBasketAsync(request.UserId);
-        return new BasketResponse
-        {
-            Success = true,
-            Message = "Item removed from basket successfully."
-        };
+        var userId = context.GetHttpContext().User.FindFirst("sub")?.Value ?? "testuser";
+        logger.LogInformation("Removing item from basket for user {UserId}", userId);
+        await basketRepository.DeleteBasketAsync(userId);
+        return new RemoveBasketResponse{};
     }
 }

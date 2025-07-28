@@ -5,8 +5,8 @@ namespace WebShop.BasketAPI.Repositories
 {
     public interface IBasketRepository
     {
-        Task DeleteBasketAsync(int userId);
-        Task<BasketResource?> GetBasketAsync(int userId);
+        Task DeleteBasketAsync(string userId);
+        Task<BasketResource?> GetBasketAsync(string userId);
         Task SetBasketAsync(BasketResource basket);
     }
 }

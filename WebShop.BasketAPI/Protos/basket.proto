@@ -9,31 +9,25 @@ service Basket {
 
   // Adds an item to the basket
   rpc GetBasket (GetBasketRequest) returns (BasketResponse);
-  rpc AddToBasket (AddToBasketRequest) returns (BasketResponse);
-  rpc RemoveFromBasket (RemoveFromBasketRequest) returns (BasketResponse);
+  rpc UpdateBasket (UpdateBasketRequest) returns (BasketResponse); 
+  rpc RemoveBasket (RemoveBasketRequest) returns (RemoveBasketResponse);
 }
 
-// The request message containing the catalog item.
-message AddToBasketRequest {
-  int32  UserId = 1;
-  int32  CatalogId = 2;
-  int32  Quantity = 3; // Default quantity is 1
-  string  Name = 4;
+message GetBasketRequest { }
+
+message UpdateBasketRequest {
+  repeated BasketItem Items = 2;
 }
 
-// The request message containing the catalog item.
-message RemoveFromBasketRequest {
-  int32  UserId = 1;
-  int32  CatalogId = 2;
-  int32  Quantity = 3; // Default quantity is 1
-  string  Name = 4;
-}
+message RemoveBasketRequest { }
+message RemoveBasketResponse { }
 
-// The response message containing the status.
 message BasketResponse {
-  bool Success = 1;
-  string Message = 2;
+  repeated BasketItem Items = 2;
 }
 
-message GetBasketRequest {
+message BasketItem {
+  int32  ProductId = 1;
+  int32  Quantity = 2;
 }
+
