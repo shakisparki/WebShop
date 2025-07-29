@@ -23,7 +23,8 @@ builder.Services.AddHttpClient<CatalogApiClient>(client =>
         client.BaseAddress = new("https+http://catalogapi");
     });
 
-builder.Services.AddScoped<BasketGrpcClient>();
+builder.Services.AddTransient<BasketService>();
+builder.Services.AddScoped<BasketState>();
 
 var app = builder.Build();
 

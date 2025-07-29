@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using WebShop.Web.Models;
 
 namespace WebShop.Web;
 
@@ -21,6 +22,21 @@ public class CatalogApiClient(HttpClient httpClient)
             return await response.Content.ReadFromJsonAsync<CatalogItem>();
         }
         return null;
+    }
+
+    public async Task<List<CatalogItem>> GetItemsByIdsAsync(List<int> itemIds)
+    {
+        //TODO: change this method to use batch api endpoint
+        var items = new List<CatalogItem>();
+        foreach (var itemId in itemIds)
+        {
+            var item = await GetItemByIdAsync(itemId);
+            if (item != null)
+            {
+                items.Add(item);
+            }
+        }
+        return items;
     }
 
     public async Task<FileContentHttpResult> GetImageUrlAsync(int itemId)

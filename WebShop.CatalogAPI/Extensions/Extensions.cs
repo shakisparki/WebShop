@@ -25,7 +25,7 @@ namespace WebShop.CatalogAPI.Extensions
         {
             var items = File.ReadAllText("catalog.json");
             var entries = JsonSerializer.Deserialize<List<CatalogSourceEntry>>(items);
-            if (entries == null || !entries.Any())
+            if (entries == null || entries.Count == 0)
             {
                 throw new InvalidOperationException("No catalog items found in the JSON file.");
             }
