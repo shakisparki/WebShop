@@ -3,7 +3,7 @@
 @attribute [OutputCache(Duration = 5)]
 
 @inject CatalogApiClient CatalogApiClient
-@inject BasketService BasketGrpcClient
+@inject BasketState BasketState
 
 <PageTitle>Catalog</PageTitle>
 
@@ -24,25 +24,26 @@ else
         <p>@item.Name</p>
         <p>@item.Description</p>
         <p>@item.Price</p>
-        <p>@item.AvailableStock</p>
+        <p>Available Stock: @item.AvailableStock</p>
     </div>
 
 
     <div>
         <form class="add-to-cart" method="post" @formname="add-to-cart" @onsubmit="@AddToCart">
-                <AntiforgeryToken />
-        @if (IsAddedToCart)
-        {
-            <div><button name="cartBtnIncrement" @onsubmit="@IncrementCart"> + </button></div>
-            <div><button name="cartBtnDecrement" @onsubmit="@DecrementCart"> - </button></div>
-            <p></p>
-            <div><button name="cartBtnRemove" type="submit"> Remove from Cart </button></div>
-            <p>Item has been added to the cart.</p>
-        }
-        else
-        {
-            <div><button name="cartBtnAdd" @onclick="@AddToCart"> Add to Cart </button></div>
-        }
+            <AntiforgeryToken />
+            @if (IsAddedToCart)
+            {
+                <div><button name="cartBtnIncrement" @onsubmit="@IncrementCart"> + </button></div>
+                <div>@QtyInCart</div>
+                <div><button name="cartBtnDecrement" @onsubmit="@DecrementCart" disabled="(@QtyInCart <= 1)"> - </button></div>
+                <p></p>
+                <div><button name="cartBtnRemove" type="submit"> Remove from Cart </button></div>
+                <p>Item has been added to the cart.</p>
+            }
+            else
+            {
+                <div><button name="cartBtnAdd" @onclick="@AddToCart"> Add to Cart </button></div>
+            }
         </form>
     </div>
 }
@@ -51,6 +52,7 @@ else
 
     [Parameter]
     public int itemId { get; set; }
+
     public bool IsAddedToCart { get; set; }
     public int QtyInCart { get; set; }
     private CatalogItem? item;
@@ -58,44 +60,58 @@ else
     protected override async Task OnInitializedAsync()
     {
         item = await CatalogApiClient.GetItemByIdAsync(itemId);
+        await BasketState.LoadBasketAsync(); //load basket state here for now
+        if (item is not null)
+        {
+            QtyInCart = BasketState.GetItemQuantity(item.Id);
+            IsAddedToCart = QtyInCart > 0;
+        }
     }
 
     public async Task AddToCart()
     {
-        if (IsAddedToCart)
+        if (IsAddedToCart || item is null)
         {
-            // remove all from cart
-            IsAddedToCart = false;
-            QtyInCart = 0;
-
-            //remove from cart logic here
-            await BasketGrpcClient.AddToBasketAsync(itemId, 0);
             return;
         }
 
         IsAddedToCart = true;
-        QtyInCart = 1; // Assuming we add one item to the cart initially    
+        QtyInCart ++; // Assuming we add one item to the cart initially    
 
         //add to cart logic here
-        await BasketGrpcClient.GetBasketAsync();
-        // await BasketGrpcClient.AddToBasketAsync(itemId, QtyInCart);
+        await BasketState.UpdateItemAsync(item, 0);
+    }
+
+    public async Task RemoveFromCart()
+    {
+        if (!IsAddedToCart || item is null)
+        {
+            return;
+        }
+
+        // remove all from cart
+        IsAddedToCart = false;
+        QtyInCart = 0;
+
+        //remove from cart logic here
+        await BasketState.RemoveItemAsync(item.Id);
     }
 
     public async Task IncrementCart()
     {
-        IsAddedToCart = true;
-        QtyInCart +=  1;
-
-        //update cart logic here
-
+        await AddToCart();
     }
 
     public async Task DecrementCart()
     {
+        if (IsAddedToCart || item is null)
+        {
+            return;
+        }
         IsAddedToCart = true;
         QtyInCart +=  -1;
 
         //update cart logic here
-
+        await BasketState.UpdateItemAsync(item, -1);
     }
 }

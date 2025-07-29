@@ -2,21 +2,40 @@
 
 namespace WebShop.Web
 {
-    public class BasketState(BasketService basketService, CatalogApiClient catalogApiClient)
+    public class BasketState
     {
+        private readonly BasketService basketService;
+        private readonly CatalogApiClient catalogApiClient;
+
+        public BasketState(BasketService basketService, CatalogApiClient catalogApiClient)
+        {
+            this.basketService = basketService;
+            this.catalogApiClient = catalogApiClient;
+        }
+
         public List<BasketItem> Items { get; set; } = [];
         public List<CatalogItem> CatalogItems { get; set; } = [];
         public decimal TotalPrice { get; set; } = 0.0m;
 
-        public async Task AddItem(CatalogItem item, int quantity)
+        public async Task UpdateItemAsync(CatalogItem item, int quantity)
         {
             var existingItem = Items.FirstOrDefault(i => i.ProductId == item.Id);
             if (existingItem != null)
             {
                 existingItem.Quantity += quantity;
+                if (existingItem.Quantity <= 0)
+                {
+                    // If the quantity is zero or less, remove the item
+                    await RemoveItemAsync(existingItem.ProductId);
+                }
             }
             else
             {
+                if (quantity <= 0)
+                {
+                    // If the quantity is zero or less, do not add the item
+                    return;
+                }
                 Items.Add(new BasketItem { ProductId = item.Id, Quantity = quantity });
             }
             TotalPrice += item.Price * quantity;
@@ -25,7 +44,7 @@ namespace WebShop.Web
             await basketService.UpdateBasketAsync(Items);
         }
 
-        public async Task  RemoveItem(int productId)
+        public async Task  RemoveItemAsync(int productId)
         {
             var itemToRemove = Items.FirstOrDefault(i => i.ProductId == productId);
             var catalogitem = CatalogItems.FirstOrDefault(i => i.Id == productId);
@@ -39,11 +58,18 @@ namespace WebShop.Web
             }
         }
 
-        public async Task LoadBasket()
+        public async Task LoadBasketAsync()
         {
             Items = await basketService.GetBasketAsync();
             CatalogItems = await catalogApiClient.GetItemsByIdsAsync(Items.Select(x=>x.ProductId).ToList());
             TotalPrice = Items.Sum(item => CatalogItems.FirstOrDefault(c => c.Id == item.ProductId)?.Price * item.Quantity) ?? 0.0m;
+        }
+
+        //get number of item of itemid in cart
+        public int GetItemQuantity(int itemId)
+        {
+            var item = Items.FirstOrDefault(i => i.ProductId == itemId);
+            return item?.Quantity ?? 0;
         }
     }
 }
