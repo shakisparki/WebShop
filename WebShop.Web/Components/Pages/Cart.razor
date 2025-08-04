@@ -1,0 +1,66 @@
+﻿@page "/cart"
+
+@attribute [StreamRendering(true)]
+@inject CatalogApiClient CatalogApiClient
+@inject BasketState BasketState
+
+<PageTitle>Cart</PageTitle>
+
+<img src="images/header-home.webp" width="1000" />
+@if (cart == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <tbody>
+            @for (int i = 0; i < cart.Count; i++)
+            {              
+                <tr>                    
+                    <td>
+                        @{
+                            var item = cart[i];
+                        }
+
+                        @* <CartItem itemId="item.ProductId" /> *@
+                        <div style="display:flex; gap:20px;">
+                            
+                            <img src="product-images/@item.Id" alt="@item.Name" class="img-fluid" style="max-width: 100%; height: 400px;" />
+
+                            <p>@item.Name</p>
+                            <p>@item.Description</p>
+                            <p>@item.Price</p>
+                            <p>@item.Quantity</p>
+                        </div>
+                            
+                    </td>
+                    
+                </tr>
+            }
+            <tr>
+                <td>
+                    <div style="display:flex; justify-content:space-between;">
+                        <p>Total:</p>
+   @*                      <p>@cart.Sum(x => x.Price * x.Quantity)</p> *@
+                        <p>@TotalPrice</p>
+                    </div>
+                </td
+            </tr>
+        </tbody>
+    </table>
+}
+
+@code{
+    // private List<BasketItem>? cart;
+    private List<Web.Models.CartItem>? cart;
+    private decimal TotalPrice = 0;
+    protected override async Task OnInitializedAsync()
+    {
+        await BasketState.LoadBasketAsync(); //load basket state here for now
+        // cart = BasketState.GetBasketItems();
+        cart = BasketState.GetCartItems();
+        TotalPrice = BasketState.GetTotalPrice();
+    }
+
+}

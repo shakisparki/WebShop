@@ -13,9 +13,9 @@ namespace WebShop.Web
             this.catalogApiClient = catalogApiClient;
         }
 
-        public List<BasketItem> Items { get; set; } = [];
-        public List<CatalogItem> CatalogItems { get; set; } = [];
-        public decimal TotalPrice { get; set; } = 0.0m;
+        private List<BasketItem> Items { get; set; } = [];
+        private List<CatalogItem> CatalogItems { get; set; } = [];
+        private decimal TotalPrice { get; set; } = 0.0m;
 
         public async Task UpdateItemAsync(CatalogItem item, int quantity)
         {
@@ -70,6 +70,34 @@ namespace WebShop.Web
         {
             var item = Items.FirstOrDefault(i => i.ProductId == itemId);
             return item?.Quantity ?? 0;
+        }
+
+        public List<CartItem> GetCartItems()
+        {
+            return Items.Select(x =>
+            {
+                var c = CatalogItems.First(c => c.Id == x.ProductId);
+                return new CartItem
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Quantity = x.Quantity,
+                    Price = c.Price,
+                    PictureFileName = c.PictureFileName,
+                    AvailableStock = c.AvailableStock
+                };
+            }).ToList();
+        }
+
+        public List<BasketItem> GetBasketItems()
+        {
+            return Items;
+        }
+
+        public decimal GetTotalPrice()
+        {
+            return (decimal)TotalPrice;
         }
     }
 }
