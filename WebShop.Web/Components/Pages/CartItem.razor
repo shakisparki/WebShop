@@ -3,10 +3,6 @@
 
 <PageTitle>Catalog</PageTitle>
 
-<h1>Catalog Items</h1>
-
-<p>This component demonstrates showing data loaded from a backend API service.</p>
-
 @if (item == null)
 {
     <p><em>Can't find Item</em></p>
@@ -16,13 +12,13 @@ else
     <div style="display:flex; gap:20px;">
         <img src="product-images/@item.Id" alt="@item.Name" class="img-fluid" style="max-width: 100%; height: 50px;" />
         <div>
-            <p>@item.Name</p>
+            <h2>@item.Name</h2>
             <p>@item.Description</p>
             <p>@item.Price</p>
             <p>Available Stock: @item.AvailableStock</p>
         </div>
     </div>
-    
+
 
 
     <div>
@@ -43,7 +39,7 @@ else
             {
                 <div><button name="Increment" value="1"> Add to Cart </button></div>
             }
-         </form>
+        </form>
     </div>
 }
 
@@ -51,6 +47,9 @@ else
 
     [Parameter]
     public int itemId { get; set; }
+
+    [Parameter]
+    public int quantity { get; set; }
 
     [SupplyParameterFromForm]
     public int? Increment { get; set; }
@@ -62,10 +61,10 @@ else
     protected override async Task OnInitializedAsync()
     {
         item = await CatalogApiClient.GetItemByIdAsync(itemId);
-        await BasketState.LoadBasketAsync(); //load basket state here for now
+        // await BasketState.LoadBasketAsync(); //load basket state here for now
         if (item is not null)
         {
-            QtyInCart = BasketState.GetItemQuantity(item.Id);
+            QtyInCart = quantity;
             IsAddedToCart = QtyInCart > 0;
         }
     }
