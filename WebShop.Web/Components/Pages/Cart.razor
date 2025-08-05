@@ -30,13 +30,15 @@ else
             <tr>
                 <td>
                     <div style="display:flex; justify-content:space-between;">
-                        <p>Total:</p>
-                        <p>@TotalPrice</p>
+                        <p>Total: </p>
+                        <p>£@TotalPrice.ToString("0.00")</p>
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
+@*      <form method="post" />
+    <AntiforgeryToken />  *@
 }
 
 @code{
@@ -46,9 +48,21 @@ else
     protected override async Task OnInitializedAsync()
     {
         await BasketState.LoadBasketAsync(); //load basket state here for now
-        // cart = BasketState.GetBasketItems();
+                                             // cart = BasketState.GetBasketItems();
         cart = BasketState.GetBasketItems();
         TotalPrice = BasketState.GetTotalPrice();
+        BasketState.OnChange += UpdateQuantity;
+    }
+
+    private void UpdateQuantity()
+    {
+        TotalPrice = BasketState.GetTotalPrice();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        BasketState.OnChange -= UpdateQuantity;
     }
 
 }

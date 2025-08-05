@@ -42,6 +42,8 @@ namespace WebShop.Web
 
             // Update the basket in the service
             await basketService.UpdateBasketAsync(Items);
+
+            OnChange?.Invoke();
         }
 
         public async Task  RemoveItemAsync(int productId)
@@ -55,6 +57,8 @@ namespace WebShop.Web
 
                 // Update the basket in the service
                 await basketService.UpdateBasketAsync(Items);
+
+                OnChange?.Invoke();
             }
         }
 
@@ -99,5 +103,8 @@ namespace WebShop.Web
         {
             return (decimal)TotalPrice;
         }
+
+        public event Action OnChange;
+
     }
 }
