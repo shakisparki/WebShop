@@ -3,6 +3,8 @@
 
 <PageTitle>Catalog</PageTitle>
 
+@if (QtyInCart == 0) { return; }
+
 @if (item == null)
 {
     <p><em>Can't find Item</em></p>
@@ -22,7 +24,7 @@ else
 
 
     <div>
-        <form class="add-to-cart" method="post" @formname="add-to-cart" @onsubmit="@AddToCart">
+        <form class="add-to-cart" method="post" @formname="@itemId.ToString()" @onsubmit="@AddToCart">
             <AntiforgeryToken /> 
             @if (IsAddedToCart)
             {
@@ -61,7 +63,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         item = await CatalogApiClient.GetItemByIdAsync(itemId);
-        // await BasketState.LoadBasketAsync(); //load basket state here for now
         if (item is not null)
         {
             QtyInCart = quantity;
@@ -90,20 +91,5 @@ else
         {
             await BasketState.UpdateItemAsync(item, Increment ?? 0);
         }        
-    }
-
-    public async Task RemoveFromCart()
-    {
-        if (!IsAddedToCart || item is null)
-        {
-            return;
-        }
-
-        // remove all from cart
-        IsAddedToCart = false;
-        QtyInCart = 0;
-
-        //remove from cart logic here
-        await BasketState.RemoveItemAsync(item.Id);
     }
 }
