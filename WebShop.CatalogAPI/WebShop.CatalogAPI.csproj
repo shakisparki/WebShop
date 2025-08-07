@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EventBus\WebShop.EventBus.csproj" />
     <ProjectReference Include="..\WebShop.ServiceDefaults\WebShop.ServiceDefaults.csproj" />
   </ItemGroup>
 
