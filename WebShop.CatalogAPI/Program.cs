@@ -15,7 +15,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped(
+builder.Services.AddSingleton(
     serviceProvider => new RabbitMqService(
         builder.Configuration.GetConnectionString("rabbitmq") ?? ""
     )

@@ -16,10 +16,9 @@ namespace WebShop.EventBus
                 Uri = new Uri(connectionString)
             };
             _connection = factory.CreateConnection();
-            SetupEventBus();
         }
 
-        private void SetupEventBus()
+        public void SetupEventBus()
         {
             using var channel = _connection.CreateModel();
             // Declare the necessary queues, exchanges, and bindings here
@@ -72,10 +71,12 @@ namespace WebShop.EventBus
             // Convert the message to a byte array
             var msgString = System.Text.Json.JsonSerializer.Serialize(message);
             var body = System.Text.Encoding.UTF8.GetBytes(msgString);
+            var basicProperties = channel.CreateBasicProperties();
+            basicProperties.Type = message.Type; // Set the message type for routing
             // Publish the message to the specified queue
             channel.BasicPublish(exchange: "orderExchange",
                                  routingKey: queueName,
-                                 basicProperties: null,
+                                 basicProperties: basicProperties,
                                  body: body);
         }
 
