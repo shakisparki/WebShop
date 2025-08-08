@@ -84,7 +84,12 @@ namespace WebShop.EventBus
             // Ensure the channel is open and ready to publish messages
             using var channel = _connection.CreateModel();
             // Convert the message to a byte array
-            var msgString = System.Text.Json.JsonSerializer.Serialize(message);
+            var messageObj = message.Type switch
+            {
+                EventTypes.PriceChanged => message as PriceChangedEvent,
+                _ => throw new InvalidOperationException("Unknown message type")
+            };
+            var msgString = System.Text.Json.JsonSerializer.Serialize(messageObj);
             var body = System.Text.Encoding.UTF8.GetBytes(msgString);
             var basicProperties = channel.CreateBasicProperties();
             basicProperties.Type = message.Type; // Set the message type for routing
