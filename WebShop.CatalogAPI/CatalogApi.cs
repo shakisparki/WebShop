@@ -53,7 +53,7 @@ public static class CatalogApi
             if (affected == 1) {
                 if (catalog.Price != item.Price)
                 {
-                    rabbitMq.PublishMessage(EventQueues.CatalogQueue, new PriceChangedEvent
+                    rabbitMq.PublishMessage(EventQueues.BasketQueue, new PriceChangedEvent
                     {
                         Type = EventTypes.PriceChanged,
                         ProductId = item.Id.ToString(),

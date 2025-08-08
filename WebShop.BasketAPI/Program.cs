@@ -29,13 +29,13 @@ app.MapGrpcService<BasketService>();
 app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
 var rmqs = app.Services.GetService<RabbitMqService>();
-rmqs.SetupEventBus();
+rmqs.SetupEventBus(); //shouldnt be done here but good to test
 rmqs.AddSubscription(EventQueues.BasketQueue,(msg) =>
 {
     if (msg.Type == EventTypes.PriceChanged)
     {
         var ev = msg as PriceChangedEvent;
-        Console.WriteLine($"Price CHagned from {ev.OldPrice} to {ev.NewPrice}");
+        Console.WriteLine($"Price Changed from {ev?.OldPrice} to {ev?.NewPrice}");
     }
     
 });

@@ -7,6 +7,7 @@ namespace WebShop.EventBus
     public class RabbitMqService : IDisposable
     {
         private readonly IConnection _connection;
+        private Dictionary<string, IModel> _consumerChannels;
 
         //constructor with rabbitmq connection string
         public RabbitMqService(string connectionString)
@@ -16,48 +17,62 @@ namespace WebShop.EventBus
                 Uri = new Uri(connectionString)
             };
             _connection = factory.CreateConnection();
+            _consumerChannels = [];
         }
 
         public void SetupEventBus()
         {
             using var channel = _connection.CreateModel();
             // Declare the necessary queues, exchanges, and bindings here
-            channel.ExchangeDeclare(exchange: "orderExchange", type: ExchangeType.Direct, durable: false, autoDelete: false, arguments: null);
+            channel.ExchangeDeclare(exchange: EventExchanges.OrderExchange, type: ExchangeType.Direct, durable: false, autoDelete: false, arguments: null);
 
-            channel.QueueDeclare(queue: "basketQueue",
+            channel.QueueDeclare(queue: EventQueues.BasketQueue,
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
 
-            channel.QueueDeclare(queue: "catalogQueue",
+            channel.QueueDeclare(queue: EventQueues.CatalogQueue,
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
 
-            channel.QueueBind(queue: "basketQueue",
-                                 exchange: "orderExchange",
-                                 routingKey: "basketQueue");
+            channel.QueueBind(queue: EventQueues.BasketQueue,
+                                 exchange: EventExchanges.OrderExchange,
+                                 routingKey: EventQueues.BasketQueue);
 
-            channel.QueueBind(queue: "catalogQueue",
-                                 exchange: "orderExchange",
-                                 routingKey: "catalogQueue");
+            channel.QueueBind(queue: EventQueues.CatalogQueue,
+                                 exchange: EventExchanges.OrderExchange,
+                                 routingKey: EventQueues.CatalogQueue);
         }
 
-        private void DeleteEventBus()
+        private void DisposeQueuesAndExchanges()
         {
             using var channel = _connection.CreateModel();
 
             // Delete the queues and exchange if needed
-            channel.QueueDelete(queue: "basketQueue");
-            channel.QueueDelete(queue: "catalogQueue");
-            channel.ExchangeDelete(exchange: "orderExchange");
+            channel.QueueDelete(queue: EventQueues.BasketQueue);
+            channel.QueueDelete(queue: EventQueues.CatalogQueue);
+            channel.ExchangeDelete(exchange: EventExchanges.OrderExchange);
+        }
+
+        private void DisposeConsumersAndConsumerChannels()
+        {
+            foreach (var consumer in _consumerChannels)
+            {
+                var consumerTag = consumer.Key;
+                var consumerChannel = consumer.Value;
+                Unsubscribe(consumerTag);
+                consumerChannel.Dispose();
+            }
+            _consumerChannels.Clear();
         }
 
         public void Dispose()
         {
-            DeleteEventBus();
+            DisposeConsumersAndConsumerChannels();
+            DisposeQueuesAndExchanges();
 
             _connection.Dispose();
             GC.SuppressFinalize(this);
@@ -74,7 +89,7 @@ namespace WebShop.EventBus
             var basicProperties = channel.CreateBasicProperties();
             basicProperties.Type = message.Type; // Set the message type for routing
             // Publish the message to the specified queue
-            channel.BasicPublish(exchange: "orderExchange",
+            channel.BasicPublish(exchange: EventExchanges.OrderExchange,
                                  routingKey: queueName,
                                  basicProperties: basicProperties,
                                  body: body);
@@ -82,8 +97,8 @@ namespace WebShop.EventBus
 
         public string AddSubscription(string queueName, Action<IMessage> messageHandler)
         {
-            // Ensure the channel is open and ready to consume messages
-            using var channel = _connection.CreateModel();
+            // Create new consumer channel
+            var channel = _connection.CreateModel();
             // Set up a consumer to listen for messages on the specified queue
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
@@ -101,11 +116,17 @@ namespace WebShop.EventBus
 
                 messageHandler(messageObj);
             };
+
             
             // Start consuming messages from the specified queue
-            return channel.BasicConsume(queue: queueName,
+            var consumerTag =  channel.BasicConsume(queue: queueName,
                                  autoAck: true,
                                  consumer: consumer);
+
+            // Store the channel and consumer tag for later use
+            _consumerChannels[consumerTag] = channel;
+
+            return consumerTag;
         }
 
         public void Unsubscribe(string consumerTag)
@@ -114,6 +135,12 @@ namespace WebShop.EventBus
             using var channel = _connection.CreateModel();
             // Cancel the consumer with the specified tag
             channel.BasicCancel(consumerTag);
+            // Remove the channel from the dictionary
+            if (_consumerChannels.TryGetValue(consumerTag, out IModel? value))
+            {
+                value.Dispose();
+                _consumerChannels.Remove(consumerTag);
+            }
         }
     }
 }
