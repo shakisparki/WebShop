@@ -26,6 +26,13 @@ builder.Services.AddHttpClient<CatalogApiClient>(client =>
 builder.Services.AddTransient<BasketService>();
 builder.Services.AddScoped<BasketState>();
 
+builder.Services.AddSingleton<SignalRClient>(
+    opt => {
+        //var connectionString = builder.Configuration.GetValue<string>("services:orderingapi:https:0") ?? "http://orderingapi";
+        var connectionString = "https://localhost:7117";
+        return new SignalRClient(connectionString + "/signalrhub");
+    });
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

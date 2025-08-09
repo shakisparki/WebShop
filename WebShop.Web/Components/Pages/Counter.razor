@@ -1,5 +1,6 @@
 ﻿@page "/counter"
 @rendermode InteractiveServer
+@inject SignalRClient _client
 
 <PageTitle>Counter</PageTitle>
 
@@ -11,6 +12,12 @@
 
 @code {
     private int currentCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await _client.StartConnection();
+        await _client.SendMessage($"Hello Bro! Initial number is {currentCount}");
+    }
 
     private void IncrementCount()
     {
